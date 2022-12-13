@@ -491,6 +491,7 @@ func (h *handlerEvent) CheckingEvent(w http.ResponseWriter, r *http.Request) {
 	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
 
 	today := time.Now().UTC()
+	today = today.Add(-time.Minute * 30)
 
 	events, err := h.EventRepository.OnProgressEvent()
 	if err != nil {
