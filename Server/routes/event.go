@@ -5,6 +5,7 @@ import (
 	"Server/pkg/middleware"
 	"Server/pkg/mysql"
 	"Server/repositories"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -21,5 +22,14 @@ func EventRoutes(r *mux.Router) {
 	r.HandleFunc("/categoryevent/{category}", h.CatarEvents).Methods("GET")
 	r.HandleFunc("/todayevent", h.TodayEvent).Methods("GET")
 	r.HandleFunc("/upcomingevent", h.UpcomingEvent).Methods("GET")
-	r.HandleFunc("/checkevent", h.CheckingEvent).Methods("PATCH")
+	//r.HandleFunc("/checkevent", h.CheckingEvent).Methods("PATCH")
+}
+
+func CheckStatusEvent(r *mux.Router) {
+	eventRepository := repositories.RepositoryEvent(mysql.DB)
+	h := handlers.HandlerEvent(eventRepository)
+
+	for range time.Tick(1 * time.Minute) {
+		h.CheckingEvent()
+	}
 }

@@ -18,7 +18,6 @@ import (
 
 	"github.com/go-playground/validator/v10"
 
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -112,17 +111,6 @@ func (h *handlerEvent) GetEvent(w http.ResponseWriter, r *http.Request) {
 
 func (h *handlerEvent) CreateEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	/*
-		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
-		userRole := userInfo["role"]
-
-		if userRole != "admin" {
-
-			w.WriteHeader(http.StatusUnauthorized)
-			response := dto.ErrorResult{Code: http.StatusBadRequest, Status: "failed", Message: "unauthorized"}
-			json.NewEncoder(w).Encode(response)
-			return
-		}*/
 
 	dataContex := r.Context().Value("dataFile")
 	filepath := dataContex.(string)
@@ -203,18 +191,7 @@ func (h *handlerEvent) CreateEvent(w http.ResponseWriter, r *http.Request) {
 
 func (h *handlerEvent) UpdateEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	/*
-		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
-		userRole := userInfo["role"]
 
-		if userRole == "admin" {
-
-			w.WriteHeader(http.StatusUnauthorized)
-			response := dto.ErrorResult{Code: http.StatusBadRequest, Status: "failed", Message: "unauthorized"}
-			json.NewEncoder(w).Encode(response)
-			return
-		}
-	*/
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
 	dataContex := r.Context().Value("dataFile")
@@ -302,17 +279,6 @@ func (h *handlerEvent) UpdateEvent(w http.ResponseWriter, r *http.Request) {
 
 func (h *handlerEvent) DeleteEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
-	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
-	userRole := userInfo["role"]
-
-	if userRole == "admin" {
-
-		w.WriteHeader(http.StatusUnauthorized)
-		response := dto.ErrorResult{Code: http.StatusBadRequest, Status: "failed", Message: "unauthorized"}
-		json.NewEncoder(w).Encode(response)
-		return
-	}
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
@@ -485,19 +451,23 @@ func (h *handlerEvent) UpcomingEvent(w http.ResponseWriter, r *http.Request) {
 
 }
 
+/*
 func (h *handlerEvent) CheckingEvent(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json")*/
+
+func (h *handlerEvent) CheckingEvent() {
 
 	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
 
 	today := time.Now().UTC()
-	today = today.Add(-time.Minute * 30)
+	today = today.Add(-time.Minute * 15)
 
 	events, err := h.EventRepository.OnProgressEvent()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		/*w.WriteHeader(http.StatusInternalServerError)
 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-		json.NewEncoder(w).Encode(response)
+		json.NewEncoder(w).Encode(response)*/
+		fmt.Println("error OnProgressEvent")
 		return
 	}
 
@@ -526,17 +496,18 @@ func (h *handlerEvent) CheckingEvent(w http.ResponseWriter, r *http.Request) {
 
 			_, err := h.EventRepository.UpdateEvent(dataGet)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				/*w.WriteHeader(http.StatusInternalServerError)
 				response := dto.ErrorResult{Code: http.StatusInternalServerError, Status: "failed", Message: err.Error()}
-				json.NewEncoder(w).Encode(response)
+				json.NewEncoder(w).Encode(response)*/
+				fmt.Println("error UpdateEvent")
 				return
 			}
 
 		}
 	}
-
-	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK}
-	json.NewEncoder(w).Encode(response)
+	/*
+		w.WriteHeader(http.StatusOK)
+		response := dto.SuccessResult{Code: http.StatusOK}
+		json.NewEncoder(w).Encode(response)*/
 
 }

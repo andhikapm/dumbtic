@@ -10,4 +10,6 @@ func RouteInit(r *mux.Router) {
 	EventRoutes(r)
 	TicketRoutes(r)
 	TransactionRoutes(r)
+
+	go CheckStatusEvent(r)
 }

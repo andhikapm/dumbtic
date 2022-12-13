@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"runtime"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -18,6 +19,8 @@ func main() {
 		if errEnv != nil {
 			panic("Failed to load env file")
 		}*/
+
+	runtime.GOMAXPROCS(2)
 
 	mysql.DatabaseInit()
 
