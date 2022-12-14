@@ -312,11 +312,13 @@ func (h *handlerEvent) DeleteEvent(w http.ResponseWriter, r *http.Request) {
 func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	token := r.Header.Get("Authorization")
+
 	user_ID := 0
-	userInfo := r.Context().Value("userInfo")
-
-	//user_ID = int(userInfo["id"].(float64))
-
+	/*if token != "" {
+		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+		user_ID = int(userInfo["id"].(float64))
+	}*/
 	category := mux.Vars(r)["category"]
 
 	events, err := h.EventRepository.WhereCatarEvent(category)
@@ -351,7 +353,7 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Status: userInfo.(string), Data: data}
+	response := dto.SuccessResult{Code: http.StatusOK, Status: token, Data: data}
 	json.NewEncoder(w).Encode(response)
 }
 
