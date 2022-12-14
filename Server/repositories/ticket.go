@@ -54,7 +54,7 @@ func (r *repository) DeleteTicket(ticket models.Ticket) (models.Ticket, error) {
 
 func (r *repository) WherePayTicket(ID int) ([]models.Ticket, error) {
 	var ticket []models.Ticket
-	err := r.db.Preload("User").Preload("Event").Where("user_id = ? AND status = ?", ID, "pending").Find(&ticket).Error
+	err := r.db.Preload("User").Preload("Event").Where("user_id = ? AND status = ? OR status = ?", ID, "Need Pay", "pending").Find(&ticket).Error
 	return ticket, err
 }
 

@@ -460,69 +460,6 @@ func (h *handlerEvent) UpcomingEvent(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/*
-func (h *handlerEvent) CheckingEvent(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")*/
-
-func (h *handlerEvent) CheckingEvent() {
-
-	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
-
-	today := time.Now().UTC()
-	//today = today.Add(time.Minute * 15)
-
-	events, err := h.EventRepository.OnProgressEvent()
-	if err != nil {
-		/*w.WriteHeader(http.StatusInternalServerError)
-		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-		json.NewEncoder(w).Encode(response)*/
-		fmt.Println("error OnProgressEvent")
-		return
-	}
-
-	for _, s := range events {
-
-		aEnd, _ := time.Parse(longForm, s.EndDate)
-
-		if aEnd.Unix() < today.Unix() {
-			s.Status = "Close"
-
-			dataGet := models.Event{
-				ID:          s.ID,
-				Title:       s.Title,
-				Category:    s.Category,
-				Image:       s.Image,
-				StartDate:   s.StartDate,
-				EndDate:     s.EndDate,
-				Price:       s.Price,
-				Address:     s.Address,
-				UrlMap:      s.UrlMap,
-				Phone:       s.Phone,
-				Email:       s.Email,
-				Description: s.Description,
-				Status:      s.Status,
-				User:        s.User,
-				UserID:      s.UserID,
-			}
-
-			_, err := h.EventRepository.UpdateEvent(dataGet)
-			if err != nil {
-				/*w.WriteHeader(http.StatusInternalServerError)
-				response := dto.ErrorResult{Code: http.StatusInternalServerError, Status: "failed", Message: err.Error()}
-				json.NewEncoder(w).Encode(response)*/
-				fmt.Println("error UpdateEvent")
-				return
-			}
-
-		}
-	}
-	/*
-		w.WriteHeader(http.StatusOK)
-		response := dto.SuccessResult{Code: http.StatusOK}
-		json.NewEncoder(w).Encode(response)*/
-
-}
-
 func (h *handlerEvent) SearchEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -561,4 +498,79 @@ func (h *handlerEvent) SearchEvent(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: http.StatusOK, Data: dataEvents}
 	json.NewEncoder(w).Encode(response)
+}
+
+func (h *handlerEvent) CheckingEvent() {
+
+	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
+
+	today := time.Now().UTC()
+	//today = today.Add(time.Minute * 15)
+
+	events, err := h.EventRepository.OnProgressEvent()
+	if err != nil {
+		fmt.Println("error OnProgressEvent")
+		return
+	}
+
+	for _, s := range events {
+
+		aEnd, _ := time.Parse(longForm, s.EndDate)
+
+		if aEnd.Unix() < today.Unix() {
+			s.Status = "Close"
+
+			dataGet := models.Event{
+				ID:          s.ID,
+				Title:       s.Title,
+				Category:    s.Category,
+				Image:       s.Image,
+				StartDate:   s.StartDate,
+				EndDate:     s.EndDate,
+				Price:       s.Price,
+				Address:     s.Address,
+				UrlMap:      s.UrlMap,
+				Phone:       s.Phone,
+				Email:       s.Email,
+				Description: s.Description,
+				Status:      s.Status,
+				User:        s.User,
+				UserID:      s.UserID,
+			}
+
+			_, err := h.EventRepository.UpdateEvent(dataGet)
+			if err != nil {
+				fmt.Println("error UpdateEvent")
+				return
+			}
+
+			tickets, err := h.EventRepository.FindUserTickets(dataGet.ID)
+			if err != nil {
+				fmt.Println("error FindUserTickets")
+				return
+			}
+
+			for _, sT := range tickets {
+				sT.Status = "Close"
+
+				dataTic := models.Ticket{
+					ID:      sT.ID,
+					Status:  sT.Status,
+					User:    sT.User,
+					UserID:  sT.UserID,
+					Qty:     sT.Qty,
+					EventID: sT.EventID,
+					Event:   sT.Event,
+				}
+
+				err := h.EventRepository.UpdateUserTicket(dataTic)
+				if err != nil {
+					fmt.Println("error UpdateUserTicket")
+					return
+				}
+
+			}
+
+		}
+	}
 }

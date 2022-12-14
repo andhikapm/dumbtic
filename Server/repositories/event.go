@@ -15,6 +15,8 @@ type EventRepository interface {
 	WhereCatarEvent(category string) ([]models.Event, error)
 	OnProgressEvent() ([]models.Event, error)
 	GetEventByProgress() ([]models.Event, error)
+	FindUserTickets(ID int) ([]models.Ticket, error)
+	UpdateUserTicket(ticket models.Ticket) error
 }
 
 func RepositoryEvent(db *gorm.DB) *repository {
@@ -72,4 +74,17 @@ func (r *repository) GetEventByProgress() ([]models.Event, error) {
 	err := r.db.Preload("User").Where("status = ?", "On Progress").Find(&event).Error
 
 	return event, err
+}
+
+func (r *repository) FindUserTickets(ID int) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+	err := r.db.Preload("User").Preload("Event").Where("event_id = ?", ID).Find(&tickets).Error
+
+	return tickets, err
+}
+
+func (r *repository) UpdateUserTicket(ticket models.Ticket) error {
+	err := r.db.Save(&ticket).Error
+
+	return err
 }
