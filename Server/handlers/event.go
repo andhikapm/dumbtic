@@ -15,6 +15,7 @@ import (
 
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
+	"github.com/golang-jwt/jwt/v4"
 
 	"github.com/go-playground/validator/v10"
 
@@ -112,6 +113,9 @@ func (h *handlerEvent) GetEvent(w http.ResponseWriter, r *http.Request) {
 func (h *handlerEvent) CreateEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	user_ID := int(userInfo["id"].(float64))
+
 	dataContex := r.Context().Value("dataFile")
 	filepath := dataContex.(string)
 
@@ -171,6 +175,7 @@ func (h *handlerEvent) CreateEvent(w http.ResponseWriter, r *http.Request) {
 		Email:       request.Email,
 		Description: request.Description,
 		Status:      "On Progress",
+		UserID:      user_ID,
 	}
 
 	event, err = h.EventRepository.CreateEvent(event)
@@ -307,6 +312,16 @@ func (h *handlerEvent) DeleteEvent(w http.ResponseWriter, r *http.Request) {
 func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	//userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	//user_ID := int(userInfo["id"].(float64))
+
+	token := r.Header.Get("Authorization")
+
+	if token == "" {
+		response := dto.ErrorResult{Message: "masuk"}
+		json.NewEncoder(w).Encode(response)
+	}
+
 	category := mux.Vars(r)["category"]
 
 	events, err := h.EventRepository.WhereCatarEvent(category)
@@ -319,11 +334,8 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 
 	var data []models.Event
 	for _, s := range events {
-		/*
-			const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
-			aStart, _ := time.Parse(longForm, s.StartDate)
-			aEnd, _ := time.Parse(longForm, s.EndDate)*/
 
+		//if user_ID != s.UserID {
 		dataGet := models.Event{
 			ID:          s.ID,
 			Title:       s.Title,
@@ -340,6 +352,7 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 			Status:      s.Status,
 		}
 		data = append(data, dataGet)
+		//}
 	}
 
 	w.WriteHeader(http.StatusOK)

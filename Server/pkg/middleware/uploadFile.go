@@ -14,7 +14,7 @@ func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 
 		file, _, err := r.FormFile("image")
 
-		if err != nil && (r.Method == "PATCH" || r.Method == "POST") {
+		if err != nil && (r.Method == "PATCH") {
 			ctx := context.WithValue(r.Context(), "dataFile", "false")
 			next.ServeHTTP(w, r.WithContext(ctx))
 			return
