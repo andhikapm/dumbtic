@@ -314,7 +314,7 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 
 	token := r.Header.Get("Authorization")
 
-	//fmt.Println(token)
+	fmt.Println(token)
 
 	user_ID := 0
 	/*	if token != "" {
