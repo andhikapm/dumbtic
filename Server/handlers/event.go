@@ -314,11 +314,13 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 
 	token := r.Header.Get("Authorization")
 
+	fmt.Println(token)
+
 	user_ID := 0
-	if token != "" {
+	/*	if token != "" {
 		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
 		user_ID = int(userInfo["id"].(float64))
-	}
+	}*/
 
 	category := mux.Vars(r)["category"]
 
