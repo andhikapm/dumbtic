@@ -314,7 +314,7 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 
 	token := r.Header.Get("Authorization")
 
-	fmt.Println(token)
+	//fmt.Println(token)
 
 	user_ID := 0
 	/*	if token != "" {
@@ -356,20 +356,20 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: data}
+	response := dto.SuccessResult{Code: http.StatusOK, Status: token, Data: data}
 	json.NewEncoder(w).Encode(response)
 }
 
 func (h *handlerEvent) TodayEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	token := r.Header.Get("Authorization")
+	//token := r.Header.Get("Authorization")
 
 	user_ID := 0
-	if token != "" {
+	/*if token != "" {
 		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
 		user_ID = int(userInfo["id"].(float64))
-	}
+	}*/
 
 	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
 	const shortForm = "2006-January-02"
@@ -425,13 +425,13 @@ func (h *handlerEvent) TodayEvent(w http.ResponseWriter, r *http.Request) {
 func (h *handlerEvent) UpcomingEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	token := r.Header.Get("Authorization")
+	//token := r.Header.Get("Authorization")
 
 	user_ID := 0
-	if token != "" {
+	/*if token != "" {
 		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
 		user_ID = int(userInfo["id"].(float64))
-	}
+	}*/
 
 	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
 	const shortForm = "2006-January-02"
