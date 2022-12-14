@@ -27,7 +27,7 @@ const DetailEvent = () => {
    const [state,] = useContext(UserContext);
    const [counter, setCounter] = useState(1)
 
-   API.patch("/checkevent")
+   //API.patch("/checkevent")
    
    let { data: eventD } = useQuery("detailCache", async () => {
       const response = await API.get('/event/' + id)
@@ -42,8 +42,8 @@ const DetailEvent = () => {
          event : parseInt(eventD?.id),
          qty : parseInt(counter),
       })
-  
-      console.log("data berhasil ditambahkan", response.data.data)
+		navigate("/payment");
+      //console.log("data berhasil ditambahkan", response.data.data)
   
       } catch (err) {
         console.log(err)

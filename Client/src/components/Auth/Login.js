@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Button, Form, Modal, Alert } from 'react-bootstrap';
 import { AppContext } from '../../contexts/AppContext';
 import { useMutation } from 'react-query';
 import { API } from '../../config/api';
@@ -8,6 +8,7 @@ import { UserContext } from '../../contexts/UserContext';
 function Login() {
    const contexts = useContext(AppContext)
    const [state, dispatch] = useContext(UserContext);
+   const [message, setMessage] = useState(null);
    const [form, setForm] = useState({
       username: '',
       password: '',
@@ -33,9 +34,18 @@ function Login() {
         
         //console.log("data berhasil ditambahkan", response.data.data)
 
+        const resUser = await API.get(`/user/${response.data.data.id}`);
+        contexts.setProfileUser(resUser.data.data)
+
         contexts.setShowLogin(false)
       
       } catch (err) {
+         const alert = (
+            <Alert variant="danger" className="py-1">
+              Login failed
+            </Alert>
+          );
+          setMessage(alert);
         console.log(err)
       
       }
@@ -47,7 +57,7 @@ function Login() {
             <Modal.Title className="my-4 fw-bolder fs-1 text-center" style={{color: "#484646"}}>LOGIN</Modal.Title>
             {/* onSubmit={(e) => contexts.handlerLogin.mutate(e)} */}
             <Form onSubmit={(e) => HandleOnSubmit.mutate(e)}>
-               {contexts.loginMessage !== '' && (contexts.loginMessage)}
+               {message && message}
                <Form.Group className="mb-4">
                   <Form.Control
                      className='border-start-0 border-end-0 border-top-0 rounded-0 px-1 fs-5'

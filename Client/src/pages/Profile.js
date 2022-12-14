@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import {Button, Container, Form} from 'react-bootstrap';
-import profileIcon from '../assets/profileIcon.png';
 import editProfile from '../assets/edit.png';
 import { AppContext } from '../contexts/AppContext';
 import Favorite from '../components/Profile/Favorite';
 import { UserContext } from '../contexts/UserContext';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { API } from '../config/api';
 
 function Profile() {
@@ -13,15 +12,7 @@ function Profile() {
    const [state,] = useContext(UserContext);
    const [isEdit, setIsEdit] = useState(false);
 
-   API.patch("/checkevent")
-   // useEffect(() => {contexts.checkUserAuth()}, []);
-
-   let { data: user, refetch } = useQuery("userCache", async () => {
-      const response = await API.get(`/user/${state.user.id}`);
-      return response.data.data;
-   });
-
-   // useEffect(() => refetch(), [isEdit]);
+   //API.patch("/checkevent")
 
    const [preview, setPreview] = useState();
    const [editData, setEditData] = useState({
@@ -33,9 +24,9 @@ function Profile() {
    });
 
    useEffect(() => {
-      setPreview(user?.image)
-      setEditData({name: user?.name, birthday: user?.birthday, phone: user?.phone, email: user?.email})
-   }, [user])
+      setPreview(contexts.profileUser?.image)
+      setEditData({name: contexts.profileUser?.name, birthday: contexts.profileUser?.birthday, phone: contexts.profileUser?.phone, email: contexts.profileUser?.email})
+   }, [contexts.profileUser])
  
    const handleChange = (e) => {
       setEditData({...editData, [e.target.name]: e.target.type === "file" ? e.target.files : e.target.value});
@@ -61,8 +52,11 @@ function Profile() {
 
          const res = await API.patch(`/user/${state.user.id}`, formData);
 
-         console.log(res)
-         refetch()
+         if(res.data.code === 200){
+            const resUser = await API.get(`/user/${state.user.id}`);
+            contexts.setProfileUser(resUser.data.data)
+         }
+
          contexts.refreshNavbar()
          setIsEdit(false)
       } catch (error) {
@@ -73,27 +67,27 @@ function Profile() {
    return (
       <>
          {!isEdit ? (
-            <Container style={{marginTop: "180px", padding: "0 20px 0px"}}>
-               <div className='d-flex pb-5'>
-                  <div className='col-5'>
-                     <h1 className='fw-bolder mb-5' style={{color: "#ff5555"}}>Profile</h1>
-                     <h2 className='fw-bolder fs-1 mb-4 text-muted'>{user?.name}</h2>
-                     <p className='fs-4 mb-3 text-muted'>{user?.birthday}</p>
-                     <p className='fs-4 mb-3 text-muted'>{user?.phone}</p>
-                     <p className='fs-4 mb-3 text-muted'>{user?.email}</p>
-                  </div>
-                  <div className='col-2'>
-                     <Button onClick={() => setIsEdit(true)} variant='' className='fs-5 fw-semibold text-light' style={{backgroundColor: "#ff5555", marginTop: "100px", width: "160px"}}>Edit Profile</Button>
-                  </div>
-                  <div className='col-5 d-flex justify-content-center' style={{margin: "20px 100px"}}>
-                     <div className='rounded-pill overflow-hidden position-relative' style={{width: "300px", height: "300px", border: "12px solid #ff5555"}}>
-                        <img src={preview} width="100%"/>
-                     </div>
-                  </div>
-               </div>
-            </Container>
+           <Container style={{marginTop: "180px", padding: "0 20px 0px"}}>
+           <div className='d-flex pb-5'>
+              <div className='col-5'>
+                 <h1 className='fw-bolder mb-5' style={{color: "#ff5555"}}>Profile</h1>
+                 <h2 className='fw-bolder fs-1 mb-4 text-muted'>{contexts.profileUser?.name}</h2>
+                 <p className='fs-4 mb-3 text-muted'>{contexts.profileUser?.birthday}</p>
+                 <p className='fs-4 mb-3 text-muted'>{contexts.profileUser?.phone}</p>
+                 <p className='fs-4 mb-3 text-muted'>{contexts.profileUser?.email}</p>
+              </div>
+              <div className='col-2'>
+                 <Button onClick={() => setIsEdit(true)} variant='' className='fs-5 fw-semibold text-light' style={{backgroundColor: "#ff5555", marginTop: "100px", width: "160px"}}>Edit Profile</Button>
+              </div>
+              <div className='col-5 d-flex justify-content-center' style={{margin: "20px 100px"}}>
+                 <div className='rounded-pill overflow-hidden position-relative' style={{width: "300px", height: "300px", border: "12px solid #ff5555"}}>
+                    <img src={preview} width="100%"/>
+                 </div>
+              </div>
+           </div>
+        </Container>
          ) : (
-            <Container style={{marginTop: "180px", padding: "0 20px"}}>
+         <Container style={{marginTop: "180px", padding: "0 20px"}}>
                <div className='d-flex'>
                   <div className='col-5 pe-5'>
                      <h1 className='fw-bolder' style={{color: "#ff5555", marginBottom: "36px"}}>Profile</h1>
@@ -170,7 +164,7 @@ function Profile() {
             </Container>
          )}
 
-        <Favorite event={user?.event}/>
+        <Favorite/>
       </>
    );
 }

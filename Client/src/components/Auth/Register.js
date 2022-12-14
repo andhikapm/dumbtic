@@ -27,7 +27,7 @@ function Register() {
     
       const response = await API.post('/register', form)
   
-      console.log("data berhasil ditambahkan", response.data.data)
+      //console.log("data berhasil ditambahkan", response.data.data)
 
       contexts.setShowRegister(false)
   

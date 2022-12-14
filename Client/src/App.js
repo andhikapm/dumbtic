@@ -38,11 +38,17 @@ function App() {
     
         let payload = response.data.data;
         payload.token = localStorage.token;
+
+        //console.log(response.data.data)
     
         dispatch({
           type: 'USER_SUCCESS',
           payload,
         });
+
+        const res = await API.get(`/user/${response.data.data.id}`);
+        contexts.setProfileUser(res.data.data)
+        
       } catch (error) {
         console.log(error);
       }

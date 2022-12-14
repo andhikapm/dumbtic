@@ -11,13 +11,15 @@ const Payment = () => {
    const contexts = useContext(AppContext);
    const [state,] = useContext(UserContext);
 
-   API.patch("/checkevent")
+   //API.patch("/checkevent")
    
    let { data: ticketU } = useQuery("payticketCache", async () => {
       const response = await API.get('/payticket')
       //console.log("berhasil ambil detail", response.data.data)
       return response.data.data
    })
+
+   //console.log(ticketU)
 
    return (
       <>
@@ -30,7 +32,7 @@ const Payment = () => {
             </div>
             <div className='bg-light' style={{borderTop: "8px solid #ff5555", padding: "80px 120px 20px"}}>
                {ticketU?.map((item, index) => (
-                  <TicketPayment key={index} id={item.id} qty={item.qty} event={item.event}/>
+                  <TicketPayment key={index} id={item.id} qty={item.qty} event={item.event} status={item.status}/>
                ))}
             </div>
          </Container>

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Button, Container, Form } from 'react-bootstrap';
+import { Button, Container, Form, Spinner } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom"
 import Footer from '../components/Footer';
 import { AppContext } from '../contexts/AppContext';
@@ -11,7 +11,7 @@ import { useMutation } from 'react-query';
 const AddEvent = () => {
    const navigate = useNavigate();
 
-   API.patch("/checkevent")
+   //API.patch("/checkevent")
 
    const contexts = useContext(AppContext);
    const [state,] = useContext(UserContext);
@@ -37,14 +37,14 @@ const AddEvent = () => {
       });
     };
     
-   const HandleOnSubmit = async(e) => {
+   const HandleOnSubmit =  useMutation(async(e) => {
       try {
          e.preventDefault()
          
          const formData = new FormData();
          formData.set('title', form.title);
          formData.set('category', form.category);
-         //formData.set('image', form.image[0], form.image[0].name);
+         formData.set('image', form.image[0], form.image[0].name);
          formData.set('startdate', new Date(form.startdate.replace('T',' ').replace('-','/')).toUTCString());
          formData.set('enddate', new Date(form.enddate.replace('T',' ').replace('-','/')).toUTCString());
          formData.set('price', form.price);
@@ -56,7 +56,7 @@ const AddEvent = () => {
 
          const response = await API.post('/addevent', formData)
    
-         console.log("data berhasil ditambahkan", response)
+         //console.log("data berhasil ditambahkan", response)
 
          navigate("/")
   
@@ -64,7 +64,7 @@ const AddEvent = () => {
         console.log(err)
   
       }
-    }
+    })
 
    return (
       <>
@@ -73,7 +73,7 @@ const AddEvent = () => {
          >
             <h1 className='fw-bolder pb-4' style={{color: "#ff5555"}}>Add Event</h1>
             <div className='pt-5 pb-1' style={{padding: "0 160px"}}>
-               <Form onSubmit={HandleOnSubmit}>
+               <Form onSubmit={(e) => HandleOnSubmit.mutate(e)}>
                   <Form.Group style={{marginBottom: "26px"}}>
                      <Form.Control
                         className='border-start-0 border-end-0 border-top-0 rounded-0 px-1 fs-4'
@@ -213,7 +213,21 @@ const AddEvent = () => {
                      />
                   </Form.Group>
                   <Form.Group className="mb-4 mt-5">
+                  {HandleOnSubmit.isLoading ? <>
+                     <Button variant='' className="w-100 fs-4 fw-bold text-white pt-1" style={{backgroundColor: "#ff5555"}}>
+                        <Spinner
+                           as="span"
+                           animation="border"
+                           role="status"
+                           aria-hidden="true"
+                        />
+                        {' '}
+                        Loading...
+                        </Button>
+                     </> : <>
                      <Button variant='' className="w-100 fs-4 fw-bold text-white pt-1" style={{backgroundColor: "#ff5555"}} type='submit'>Publish</Button>
+                  </>
+                  }
                   </Form.Group>
                   
                </Form>

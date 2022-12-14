@@ -15,7 +15,7 @@ const MyTicket = () => {
    const contexts = useContext(AppContext);
    const [state,] = useContext(UserContext);
 
-   API.patch("/checkevent")
+   //API.patch("/checkevent")
    
    let { data: ticketU } = useQuery("myticketCache", async () => {
       const response = await API.get('/myticket')

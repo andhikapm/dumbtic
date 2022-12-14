@@ -1,25 +1,38 @@
-import React, {  useEffect, useState } from 'react';
+import React, {  useEffect, useState, useContext } from 'react';
 import { Card} from 'react-bootstrap';
 import { useNavigate } from "react-router-dom"
 import wishlistIcon from '../../assets/wishlist.png';
 import wishlistWhite from '../../assets/wishlistWhite.png'
 import { API } from '../../config/api';
+import { AppContext } from '../../contexts/AppContext';
 
 export default function CardEvent(props) {
    const navigate = useNavigate();
-
+   const contexts = useContext(AppContext)
    const [startState, setStartState] = useState(new Date())
+
+   const [wishlist, setWishlist] = useState([]);
   
    useEffect(() => {
       setStartState(new Date(props.startdate))
-   }, []);
 
+   }, []);
    const handlerWishlist = async(id, price) => {
       try {
          
-         await API.patch('/addwishlist', {
-            event_id: parseInt(id)
-         })
+         let filterID = wishlist.filter((e) => e === props);
+         //console.log(wishlist.filter((e) => e == props))
+         //console.log(wishlist)
+         //console.log(props)
+         //if (filterID[0] !== props) {
+          //  setWishlist([...wishlist, props])
+            await API.patch('/addwishlist', {
+               event_id: parseInt(id)
+            })
+   /*
+         } else {
+            setWishlist(wishlist.filter((e) => e !== props));
+         }*/
 
       } catch (err) {
          console.log(err)
@@ -48,8 +61,16 @@ export default function CardEvent(props) {
                            <h2 className='col-10 fs-4 fw-bold'>{props.title}</h2>
                         )}
                         <div className='col-2'></div>
-                           <div className='position-absolute' style={{right: "18px", top: "14px", zIndex: "99"}}>
-                              <img width="34px" src={wishlistIcon}
+                           {wishlist.filter((e) => e === props.id)[0] === props.id && (
+                              <div className='position-absolute' style={{right: "18px", top: "14px", zIndex: "99"}}>
+                                 <img width="34px" src={wishlistIcon}
+                                    onClick={() => handlerWishlist(props.id)}
+                                    style={{cursor: 'pointer'}}
+                                 />
+                              </div>
+                           )}
+                           <div className='position-absolute' style={{right: "18px", top: "14px"}}>
+                              <img width="34px" src={wishlistWhite}
                                  onClick={() => handlerWishlist(props.id)}
                                  style={{cursor: 'pointer'}}
                               />

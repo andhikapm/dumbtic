@@ -5,6 +5,7 @@ import { UserContext } from '../../contexts/UserContext';
 import { useQuery } from 'react-query';
 import { API } from '../../config/api';
 import CardEvent from './CardEvent';
+import noEvents from '../../assets/no-event.png';
 
 const TodayEvent = () => {
    const contexts = useContext(AppContext);
@@ -17,10 +18,18 @@ const TodayEvent = () => {
   })
 
    return (
-      <Container className='row justify-content-between m-auto pb-5 px-0 mb-4'>
+      <Container className='row m-auto pb-5 px-0 mb-4'>
          <h1 className='fw-bolder px-4 pb-4' style={{color: "#ff5555"}}>Today</h1>
-         {events?.map((item, index) => 
-            <CardEvent key={index} id={item.id} title={item.title} description={item.description} image={item.image} startdate ={item.startdate} price={item.price}/>
+         {events?.length === undefined ? (
+            <div className='text-center'>
+               <img src={noEvents} width="50%"/>
+            </div>
+         ) : (
+            <>
+               {events?.map((item, index) => 
+                  <CardEvent key={index} id={item.id} title={item.title} description={item.description} image={item.image} startdate ={item.startdate} price={item.price}/>
+               )}
+            </>
          )}
       </Container>
    );

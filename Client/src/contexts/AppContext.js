@@ -22,8 +22,10 @@ export const AppContextProvider = ({children}) => {
    const [showLogin, setShowLogin] = useState(false);
    const [showRegister, setShowRegister] = useState(false);
    const [profilePhoto, setProfilePhoto] = useState();
+   const [profileUser, setProfileUser] = useState();
    // const [cartLength, setCartLength] = useState();
-
+   const [showLoading, setLoading] = useState(false);
+   const [showModMess, setShowModMess] = useState(false);
    // ==================================================================================================================================
    // FORMAT CURRENCY ==================================================================================================================
    // ==================================================================================================================================
@@ -200,8 +202,14 @@ export const AppContextProvider = ({children}) => {
 
       profilePhoto,
       refreshNavbar,
+      profileUser,
+      setProfileUser,
       // cartLength,
       // setCartLength,
+      showLoading,
+      setLoading,
+      showModMess,
+      setShowModMess,
 
       formatCurrency,
       
