@@ -312,14 +312,12 @@ func (h *handlerEvent) DeleteEvent(w http.ResponseWriter, r *http.Request) {
 func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	//userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
-	//user_ID := int(userInfo["id"].(float64))
-
 	token := r.Header.Get("Authorization")
 
-	var responseToke string
-	if token == "" {
-		responseToke = "g ad token"
+	user_ID := 0
+	if token != "" {
+		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+		user_ID = int(userInfo["id"].(float64))
 	}
 
 	category := mux.Vars(r)["category"]
@@ -335,28 +333,28 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 	var data []models.Event
 	for _, s := range events {
 
-		//if user_ID != s.UserID {
-		dataGet := models.Event{
-			ID:          s.ID,
-			Title:       s.Title,
-			Category:    s.Category,
-			Image:       s.Image,
-			StartDate:   s.StartDate,
-			EndDate:     s.EndDate,
-			Price:       s.Price,
-			Address:     s.Address,
-			UrlMap:      s.UrlMap,
-			Phone:       s.Phone,
-			Email:       s.Email,
-			Description: s.Description,
-			Status:      s.Status,
+		if user_ID != s.UserID {
+			dataGet := models.Event{
+				ID:          s.ID,
+				Title:       s.Title,
+				Category:    s.Category,
+				Image:       s.Image,
+				StartDate:   s.StartDate,
+				EndDate:     s.EndDate,
+				Price:       s.Price,
+				Address:     s.Address,
+				UrlMap:      s.UrlMap,
+				Phone:       s.Phone,
+				Email:       s.Email,
+				Description: s.Description,
+				Status:      s.Status,
+			}
+			data = append(data, dataGet)
 		}
-		data = append(data, dataGet)
-		//}
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Status: responseToke, Data: data}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: data}
 	json.NewEncoder(w).Encode(response)
 }
 
