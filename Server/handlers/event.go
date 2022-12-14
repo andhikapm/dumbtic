@@ -340,6 +340,7 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 			Description: s.Description,
 			Status:      s.Status,
 			User:        s.User,
+			UserID:      s.UserID,
 		}
 		data = append(data, dataGet)
 
@@ -390,6 +391,7 @@ func (h *handlerEvent) TodayEvent(w http.ResponseWriter, r *http.Request) {
 			Description: s.Description,
 			Status:      s.Status,
 			User:        s.User,
+			UserID:      s.UserID,
 		}
 
 		if ((today.Unix() <= aStart.Unix()) || (today.Unix() <= aEnd.Unix())) && (aStart.Unix() <= tomorrowCompare.Unix()) {
@@ -443,6 +445,7 @@ func (h *handlerEvent) UpcomingEvent(w http.ResponseWriter, r *http.Request) {
 			Description: s.Description,
 			Status:      s.Status,
 			User:        s.User,
+			UserID:      s.UserID,
 		}
 
 		if aStart.Unix() >= tomorrowCompare.Unix() {
@@ -498,6 +501,8 @@ func (h *handlerEvent) CheckingEvent() {
 				Email:       s.Email,
 				Description: s.Description,
 				Status:      s.Status,
+				User:        s.User,
+				UserID:      s.UserID,
 			}
 
 			_, err := h.EventRepository.UpdateEvent(dataGet)
@@ -547,6 +552,7 @@ func (h *handlerEvent) SearchEvent(w http.ResponseWriter, r *http.Request) {
 			Description: s.Description,
 			Status:      s.Status,
 			User:        s.User,
+			UserID:      s.UserID,
 		}
 
 		dataEvents = append(dataEvents, dataGet)

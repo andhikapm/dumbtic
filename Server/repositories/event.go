@@ -23,14 +23,14 @@ func RepositoryEvent(db *gorm.DB) *repository {
 
 func (r *repository) FindEvents() ([]models.Event, error) {
 	var events []models.Event
-	err := r.db.Find(&events).Error
+	err := r.db.Preload("User").Find(&events).Error
 
 	return events, err
 }
 
 func (r *repository) GetEvent(ID int) (models.Event, error) {
 	var event models.Event
-	err := r.db.First(&event, ID).Error
+	err := r.db.Preload("User").First(&event, ID).Error
 
 	return event, err
 }
@@ -42,7 +42,7 @@ func (r *repository) CreateEvent(event models.Event) (models.Event, error) {
 }
 
 func (r *repository) UpdateEvent(event models.Event) (models.Event, error) {
-	err := r.db.Save(&event).Error
+	err := r.db.Preload("User").Save(&event).Error
 
 	return event, err
 }
@@ -55,21 +55,21 @@ func (r *repository) DeleteEvent(event models.Event) (models.Event, error) {
 
 func (r *repository) WhereCatarEvent(category string) ([]models.Event, error) {
 	var event []models.Event
-	err := r.db.Where("category = ? AND status = ?", category, "On Progress").Find(&event).Error
+	err := r.db.Preload("User").Where("category = ? AND status = ?", category, "On Progress").Find(&event).Error
 
 	return event, err
 }
 
 func (r *repository) OnProgressEvent() ([]models.Event, error) {
 	var event []models.Event
-	err := r.db.Where("status = ?", "On Progress").Find(&event).Error
+	err := r.db.Preload("User").Where("status = ?", "On Progress").Find(&event).Error
 
 	return event, err
 }
 
 func (r *repository) GetEventByProgress() ([]models.Event, error) {
 	var event []models.Event
-	err := r.db.Where("status = ?", "On Progress").Find(&event).Error
+	err := r.db.Preload("User").Where("status = ?", "On Progress").Find(&event).Error
 
 	return event, err
 }
