@@ -86,7 +86,7 @@ func (h *handlerTicket) CreateTicket(w http.ResponseWriter, r *http.Request) {
 		UserID:  user_ID,
 		EventID: request.EventID,
 		Qty:     request.Qty,
-		Status:  "pending",
+		Status:  "Need Pay",
 	}
 
 	ticket, err = h.TicketRepository.CreateTicket(ticket)
