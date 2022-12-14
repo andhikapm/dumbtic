@@ -317,9 +317,9 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 
 	token := r.Header.Get("Authorization")
 
+	var responseToke string
 	if token == "" {
-		response := dto.ErrorResult{Message: "masuk"}
-		json.NewEncoder(w).Encode(response)
+		responseToke = "g ad token"
 	}
 
 	category := mux.Vars(r)["category"]
@@ -356,7 +356,7 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: data}
+	response := dto.SuccessResult{Code: http.StatusOK, Status: responseToke, Data: data}
 	json.NewEncoder(w).Encode(response)
 }
 
