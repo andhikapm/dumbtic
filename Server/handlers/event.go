@@ -490,7 +490,7 @@ func (h *handlerEvent) CheckingEvent() {
 	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
 
 	today := time.Now().UTC()
-	today = today.Add(time.Minute * 15)
+	//today = today.Add(time.Minute * 15)
 
 	events, err := h.EventRepository.OnProgressEvent()
 	if err != nil {
