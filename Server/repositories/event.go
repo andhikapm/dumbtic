@@ -14,6 +14,7 @@ type EventRepository interface {
 	DeleteEvent(event models.Event) (models.Event, error)
 	WhereCatarEvent(category string) ([]models.Event, error)
 	OnProgressEvent() ([]models.Event, error)
+	GetEventByProgress() ([]models.Event, error)
 }
 
 func RepositoryEvent(db *gorm.DB) *repository {
@@ -60,6 +61,13 @@ func (r *repository) WhereCatarEvent(category string) ([]models.Event, error) {
 }
 
 func (r *repository) OnProgressEvent() ([]models.Event, error) {
+	var event []models.Event
+	err := r.db.Where("status = ?", "On Progress").Find(&event).Error
+
+	return event, err
+}
+
+func (r *repository) GetEventByProgress() ([]models.Event, error) {
 	var event []models.Event
 	err := r.db.Where("status = ?", "On Progress").Find(&event).Error
 

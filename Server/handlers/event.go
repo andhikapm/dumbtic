@@ -339,6 +339,7 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 			Email:       s.Email,
 			Description: s.Description,
 			Status:      s.Status,
+			User:        s.User,
 		}
 		data = append(data, dataGet)
 
@@ -388,6 +389,7 @@ func (h *handlerEvent) TodayEvent(w http.ResponseWriter, r *http.Request) {
 			Email:       s.Email,
 			Description: s.Description,
 			Status:      s.Status,
+			User:        s.User,
 		}
 
 		if ((today.Unix() <= aStart.Unix()) || (today.Unix() <= aEnd.Unix())) && (aStart.Unix() <= tomorrowCompare.Unix()) {
@@ -440,6 +442,7 @@ func (h *handlerEvent) UpcomingEvent(w http.ResponseWriter, r *http.Request) {
 			Email:       s.Email,
 			Description: s.Description,
 			Status:      s.Status,
+			User:        s.User,
 		}
 
 		if aStart.Unix() >= tomorrowCompare.Unix() {
@@ -513,4 +516,43 @@ func (h *handlerEvent) CheckingEvent() {
 		response := dto.SuccessResult{Code: http.StatusOK}
 		json.NewEncoder(w).Encode(response)*/
 
+}
+
+func (h *handlerEvent) SearchEvent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	events, err := h.EventRepository.GetEventByProgress()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	var dataEvents []models.Event
+	for _, s := range events {
+
+		dataGet := models.Event{
+			ID:          s.ID,
+			Title:       s.Title,
+			Category:    s.Category,
+			Image:       s.Image,
+			StartDate:   s.StartDate,
+			EndDate:     s.EndDate,
+			Price:       s.Price,
+			Address:     s.Address,
+			UrlMap:      s.UrlMap,
+			Phone:       s.Phone,
+			Email:       s.Email,
+			Description: s.Description,
+			Status:      s.Status,
+			User:        s.User,
+		}
+
+		dataEvents = append(dataEvents, dataGet)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := dto.SuccessResult{Code: http.StatusOK, Data: dataEvents}
+	json.NewEncoder(w).Encode(response)
 }

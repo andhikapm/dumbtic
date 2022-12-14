@@ -22,7 +22,7 @@ func EventRoutes(r *mux.Router) {
 	r.HandleFunc("/categoryevent/{category}", h.CatarEvents).Methods("GET")
 	r.HandleFunc("/todayevent", h.TodayEvent).Methods("GET")
 	r.HandleFunc("/upcomingevent", h.UpcomingEvent).Methods("GET")
-	//r.HandleFunc("/checkevent", h.CheckingEvent).Methods("PATCH")
+	r.HandleFunc("/searchevents", h.SearchEvent).Methods("GET")
 }
 
 func CheckStatusEvent(r *mux.Router) {
