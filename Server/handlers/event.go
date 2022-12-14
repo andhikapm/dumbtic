@@ -361,6 +361,14 @@ func (h *handlerEvent) CatarEvents(w http.ResponseWriter, r *http.Request) {
 func (h *handlerEvent) TodayEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	token := r.Header.Get("Authorization")
+
+	user_ID := 0
+	if token != "" {
+		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+		user_ID = int(userInfo["id"].(float64))
+	}
+
 	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
 	const shortForm = "2006-January-02"
 
@@ -380,27 +388,29 @@ func (h *handlerEvent) TodayEvent(w http.ResponseWriter, r *http.Request) {
 	var data []models.Event
 	for _, s := range events {
 
-		aStart, _ := time.Parse(longForm, s.StartDate)
-		aEnd, _ := time.Parse(longForm, s.EndDate)
+		if user_ID != s.UserID {
+			aStart, _ := time.Parse(longForm, s.StartDate)
+			aEnd, _ := time.Parse(longForm, s.EndDate)
 
-		dataGet := models.Event{
-			ID:          s.ID,
-			Title:       s.Title,
-			Category:    s.Category,
-			Image:       s.Image,
-			StartDate:   s.StartDate,
-			EndDate:     s.EndDate,
-			Price:       s.Price,
-			Address:     s.Address,
-			UrlMap:      s.UrlMap,
-			Phone:       s.Phone,
-			Email:       s.Email,
-			Description: s.Description,
-			Status:      s.Status,
-		}
+			dataGet := models.Event{
+				ID:          s.ID,
+				Title:       s.Title,
+				Category:    s.Category,
+				Image:       s.Image,
+				StartDate:   s.StartDate,
+				EndDate:     s.EndDate,
+				Price:       s.Price,
+				Address:     s.Address,
+				UrlMap:      s.UrlMap,
+				Phone:       s.Phone,
+				Email:       s.Email,
+				Description: s.Description,
+				Status:      s.Status,
+			}
 
-		if ((today.Unix() <= aStart.Unix()) || (today.Unix() <= aEnd.Unix())) && (aStart.Unix() <= tomorrowCompare.Unix()) {
-			data = append(data, dataGet)
+			if ((today.Unix() <= aStart.Unix()) || (today.Unix() <= aEnd.Unix())) && (aStart.Unix() <= tomorrowCompare.Unix()) {
+				data = append(data, dataGet)
+			}
 		}
 	}
 
@@ -413,6 +423,14 @@ func (h *handlerEvent) TodayEvent(w http.ResponseWriter, r *http.Request) {
 func (h *handlerEvent) UpcomingEvent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	token := r.Header.Get("Authorization")
+
+	user_ID := 0
+	if token != "" {
+		userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+		user_ID = int(userInfo["id"].(float64))
+	}
+
 	const longForm = "Mon, 02 Jan 2006 15:04:00 MST"
 	const shortForm = "2006-January-02"
 
@@ -432,27 +450,28 @@ func (h *handlerEvent) UpcomingEvent(w http.ResponseWriter, r *http.Request) {
 	var data []models.Event
 	for _, s := range events {
 
-		aStart, _ := time.Parse(longForm, s.StartDate)
-		//aEnd, _ := time.Parse(longForm, s.EndDate)
+		if user_ID != s.UserID {
+			aStart, _ := time.Parse(longForm, s.StartDate)
 
-		dataGet := models.Event{
-			ID:          s.ID,
-			Title:       s.Title,
-			Category:    s.Category,
-			Image:       s.Image,
-			StartDate:   s.StartDate,
-			EndDate:     s.EndDate,
-			Price:       s.Price,
-			Address:     s.Address,
-			UrlMap:      s.UrlMap,
-			Phone:       s.Phone,
-			Email:       s.Email,
-			Description: s.Description,
-			Status:      s.Status,
-		}
+			dataGet := models.Event{
+				ID:          s.ID,
+				Title:       s.Title,
+				Category:    s.Category,
+				Image:       s.Image,
+				StartDate:   s.StartDate,
+				EndDate:     s.EndDate,
+				Price:       s.Price,
+				Address:     s.Address,
+				UrlMap:      s.UrlMap,
+				Phone:       s.Phone,
+				Email:       s.Email,
+				Description: s.Description,
+				Status:      s.Status,
+			}
 
-		if aStart.Unix() >= tomorrowCompare.Unix() {
-			data = append(data, dataGet)
+			if aStart.Unix() >= tomorrowCompare.Unix() {
+				data = append(data, dataGet)
+			}
 		}
 	}
 
