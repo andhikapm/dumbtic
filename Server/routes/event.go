@@ -19,9 +19,9 @@ func EventRoutes(r *mux.Router) {
 	r.HandleFunc("/addevent", middleware.Auth(middleware.UploadFile(h.CreateEvent))).Methods("POST")
 	r.HandleFunc("/event/{id}", middleware.Auth(middleware.UploadFile(h.UpdateEvent))).Methods("PATCH")
 	r.HandleFunc("/event/{id}", middleware.Auth(h.DeleteEvent)).Methods("DELETE")
-	r.HandleFunc("/categoryevent/{category}", middleware.Auth(h.CatarEvents)).Methods("GET")
-	r.HandleFunc("/todayevent", middleware.Auth(h.TodayEvent)).Methods("GET")
-	r.HandleFunc("/upcomingevent", middleware.Auth(h.UpcomingEvent)).Methods("GET")
+	r.HandleFunc("/categoryevent/{category}", middleware.AuthForEvent(h.CatarEvents)).Methods("GET")
+	r.HandleFunc("/todayevent", middleware.AuthForEvent(h.TodayEvent)).Methods("GET")
+	r.HandleFunc("/upcomingevent", middleware.AuthForEvent(h.UpcomingEvent)).Methods("GET")
 	//r.HandleFunc("/checkevent", h.CheckingEvent).Methods("PATCH")
 }
 
