@@ -14,5 +14,6 @@ type Event struct {
 	Email       string        `json:"email" form:"email" gorm:"type: varchar(255)"`
 	Description string        `json:"description" form:"description" gorm:"type:text"`
 	Status      string        `json:"status" form:"status" gorm:"type: varchar(255)"`
+	UserID      int           `json:"user_id" form:"user_id"`
 	User        UsersResponse `json:"user" form:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
