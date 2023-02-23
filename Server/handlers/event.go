@@ -146,6 +146,7 @@ func (h *handlerEvent) CreateEvent(w http.ResponseWriter, r *http.Request) {
 		response := dto.ErrorResult{Code: http.StatusInternalServerError, Status: "failed", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
+
 	}
 
 	var sentImg = ""
