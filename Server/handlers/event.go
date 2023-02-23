@@ -148,7 +148,7 @@ func (h *handlerEvent) CreateEvent(w http.ResponseWriter, r *http.Request) {
 		return
 
 	}
-
+	//mencoba
 	var sentImg = ""
 
 	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
